@@ -1,12 +1,21 @@
 # Individuell fördjupning för VG-underlag
 
-## 1. Översikt
-- **Syfte:** Redogörelse för alla virtualiserade maskiner, hårdvara, nätverk och användare. Dessa maskiner används för att utforska både Linux och Windows för att skaffa kunskap och färdigheter inom systemdrift.
+## Översikt
+- **Syfte:** Detta dokument är indelat i tre delar, första delen förklarar ett pakets väg från en klient till en server. Den andra delen redogör hur filrättigheter fungerar i Linux kontra Windows. Den sista delen är en teknisk dokumentation som går igenom de virtualiserade maskinerna, hårdvara & mjjukvara samt nätverk och användare. Dessa maskiner används för att utforska både Linux och Windows för att skaffa kunskap och färdigheter inom systemdrift.
 - **Ägare:** Victor Gunnarsson
 
 ---
 
-## 2. Systeminformation
+
+## Moment A - Hur ett paket färdas från klient till server
+
+
+## Moment B - Filrättigheter i Linux & Windows
+
+
+## Moment C - Teknisk dokumentation
+
+### 1. Systeminformation
 
 De två maskinerna är virtueliserade i VirtualBox med identisk virtuell hårdvara, det som skiljer sig är storleken på hårddiskarna då Windows 11 kräver större utrymme. 2 kärnor med 8GB tillåter att systemen har en någorlunda bra prestanda.
 
@@ -14,14 +23,14 @@ De två maskinerna är virtueliserade i VirtualBox med identisk virtuell hårdva
 | ----------| -------- | ------- |
 | Hostname | ubuntuserverlab | WINDOWS11LAB |
 | Operativsystem | Ubuntu 26.04 LTS |Microsoft Windows 11 Home|
-| Build | ----- | ----- |
+| Build | 7.0.0-31-generic | ----- |
 | CPU | 2 Kärnor | 2 Kärnor |
 | RAM | 8GB | 8 GB |
 | Lagring | 25GB virtuell hårddisk | 60 GB virtuell hårddisk |
 
 ---
 
-## 3. Nätverksinformation
+### 2. Nätverksinformation
 
 Båda nätverkskorten är satta till Internal Network i VirtualBox så de har kontakt med varandra, men ingen utanför. IP-adresserna är statiska på maskinerna.
 
@@ -39,14 +48,14 @@ På Ubuntu är UFW igång men inga speciella regler har blivit tillagda.
 
 ---
 
-## 4. Användare & grupper
+### 3. Användare & grupper
 
-### Linux
+#### Linux
 
 - **Lokala användare:**  Victor, bob, alice
 - **Lokala grupper:** Ledare (alice), Personal (bob)
 
-### Windows
+#### Windows
 
 - **Lokala användare:**  Victor, bob, alice
 - **Lokala grupper:** Ledare (alice), Personal (bob)
