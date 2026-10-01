@@ -13,15 +13,15 @@
 
     När du skriver in svt.se i webbläsaren avgör klienten först vilken port som ska användas. Eftersom svt.se använder HTTPS skickas trafiken över port 443.
 
-2. Datorer kommunicerar med IP‑adresser, inte domännamn. Därför måste klienten först ta reda på vilken IP‑adress svt.se har. Den skickar ett DNS‑förfrågningspaket via:
+2. Datorer kommunicerar med IP‑adresser, inte domännamn. Därför måste klienten först ta reda på vilken IP‑adress som svt.se har. Den skickar ett DNS‑förfrågningspaket som går en liknande väg som ovan, men med en DNS-server som destination:
 
 - den virtuella klienten
 - hostmaskinen
-- hemmaroutern
-- ISP:n (som ofta är DNS‑server)
-- alternativt en publik DNS‑server, t.ex. 8.8.8.8
+- hemmaroutern (står oftast som DNS-server)
+- ISP:ns DNS-server, alternativt en publik DNS‑server t.ex. 8.8.8.8
+- Top-Level Domain (TLD)
 
-    DNS‑servern kontrollerar först sin cache. Om adressen inte finns där går den vidare till rätt toppdomänserver — i detta fall .se — som kan peka ut IP‑adressen för svt.se. Svaret skickas tillbaka till klienten, som sparar det en tid för att slippa göra nya uppslag varje gång.
+    Routern som ofta agerar DNS‑server kontrollerar först sin cache. Om adressen inte finns där går den vidare till den toppdomänserver som har hand om svenska adresser (.se) som kan peka ut IP‑adressen för svt.se. Svaret skickas tillbaka till klienten, som sparar det en tid för att slippa göra nya uppslag varje gång. Även routern sparar informationen om någon annan klient skulle göra samma uppslag, då behöver inte en förfrågan gå samma väg, utan får svar direkt från routern.
 
 3. Nu när IP‑adressen är känd kan klienten skapa ett paket som ska skickas till svt.se.
 Paketet byggs lager för lager:
@@ -32,24 +32,20 @@ Paketet byggs lager för lager:
     - Transportlagret: Lägger på en TCP‑header med t.ex. SYN‑flaggan för att initiera anslutningen.
     - Nätverkslagret: Anger käll‑IP (klienten) och destinations‑IP (svt.se).
     - Datalänklagret: Lägger på MAC‑adresser. Destination blir hostens MAC‑adress, källan blir klientens virtuella MAC‑adress.
+    - Fysiska lagret - Där paketet skickas ut, Ethernet eller Wi-Fi.
 
 4. Paketet skickas via Wi‑Fi/Ethernet till hemmaroutern. Routern ser att destinationen inte finns i det lokala nätverket och måste därför skicka paketet vidare ut på internet.
 Eftersom klientens IP‑adress är privat (t.ex. 192.168.1.100) kan den inte användas på internet. Routern gör därför en NAT‑översättning, där den privata IP‑adressen ersätts med routerns publika IP‑adress som pekar ut mot internet.
 
 5. Routern skickar paketet vidare till ISP:n, som i sin tur skickar det vidare ut på internet. Paketet kan gå igenom många routrar. Vid varje router sker följande:
     - läser paketets destinations‑IP
-    - uppdaterar MAC‑adresser för nästa hopp
+    - uppdaterar MAC‑adresser för nästa hopp (källan blir nuvarande router och destination blir nästa router)
     - behåller IP‑adresserna oförändrade
-    - minskar TTL‑värdet (Time To Live) så inte paketet finns för alltid
+    - minskar TTL‑värdet (Time To Live) för att paketet inte ska finnas för alltid
 
-    Till slut når paketet nätverket där svt.se:s server finns, och den lokala infrastrukturen där skickar det vidare till själva servern som tar hand om paketet och etablerar en anslutning.
+    Till slut når paketet nätverket där svt.se:s server finns och den lokala infrastrukturen skickar det vidare till själva servern som tar hand om paketet och etablerar en anslutning.
 
-6. Servern på svt.se skickar tillbaka ett svar där:
-
-    - käll‑IP är svt.se
-    - destinations‑IP är hemmarouterns publika IP
-    
-    När svaret når hemmaroutern använder den sin NAT‑tabell för att avgöra vilken intern klient som ska ha paketet. Därefter skickas det tillbaka genom hosten till den virtuella klienten.
+6. Servern på svt.se skickar tillbaka ett svar där den går till vår virtuella host. Den kan ta samma väg tillbaka men det är inte garanterat. Paketet har destinations-IP till routerns publika adress och käll-IP:n till svt.se När svaret når hemmaroutern använder den sin NAT‑tabell för att avgöra vilken intern klient som ska ha paketet. Därefter skickas det tillbaka genom hosten till den virtuella klienten.
 
 ## Moment B - Filrättigheter i Linux & Windows
 
